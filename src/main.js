@@ -11,8 +11,9 @@ Vue.use(Vant)
 */
 
 // 使用 babel-plugin-import 按需求 引入 vant 中对应的组件（不需要专门引入样式）
-import {Button} from 'vant' // 引入 button
-Vue.use(Button)
+import {Button, Col, Row} from 'vant' 
+
+Vue.use(Button).use(Col).use(Row)
 
 
 Vue.config.productionTip = false
