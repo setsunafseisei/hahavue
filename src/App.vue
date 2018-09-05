@@ -12,7 +12,6 @@ export default {
 
 <style>
 #app {
-  background-color: #eee;
-  font-size: 1rem;
+  background-color: #f0f0f0;
 }
 </style>

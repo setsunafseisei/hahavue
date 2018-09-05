@@ -38,11 +38,30 @@
             <div class="rcmd-title">
                 商品推荐
             </div>
-            <div class="rcmd-body"></div>
+            <div class="rcmd-body">
+                <!--swiper-->
+                <swiper :options="swiperOption">
+                    <swiper-slide v-for=" (item ,index) in recommendGoods" :key="index">
+                        <div class="rcmd-item">
+                            <!-- <img v-lazy="item.image" width="80%" /> -->
+                            <img :src="item.image" width="80%" />
+                            <div>{{item.goodsName}}</div>
+                            <div>￥{{item.price}} (￥{{item.mallPrice}})</div>
+                        </div>
+                    </swiper-slide>
+                </swiper>            
+                <!-- <div class="swiperComponentTest">
+                    <swiperDefault></swiperDefault> 
+                    <swiperDefaultVertical></swiperDefaultVertical>
+                    <swiperDefaultPageBar></swiperDefaultPageBar>
+                    <swiperDefaultText></swiperDefaultText>
+                </div> -->
+            </div>
         </div>
 
-
-
+        <!-- 商品楼层 -->
+        <floorComponent :floorData="floor1"></floorComponent>
+        
 
 
     </div>
@@ -51,20 +70,50 @@
 <script>
     import axios from 'axios'
 
+    // 引入  vue-awesome-swiper
+    import 'swiper/dist/css/swiper.css'
+    import { swiper, swiperSlide } from "vue-awesome-swiper"
+
+    // 引入自己封装的各种样式的滑动 组件
+    /*
+    import swiperDefault from '../swiper/swiperDefault'
+    import swiperDefaultVertical from '../swiper/swiperDefault-vertical'
+    import swiperDefaultPageBar from '../swiper/swiperDefault-pageBar'
+    import swiperDefaultText from '../swiper/swiperDefault-text'
+    */
+
+   // 引入 自己做的 floor 组件
+   import floorComponent from '../component/floorComponent'
+
+
     export default {
+        // 输出允许使用  vue-awesome-swiper 
+        components:{ 
+            swiper, swiperSlide, floorComponent,   
+            /*这是自己封装的 滑动组件*/
+            // swiperDefault,swiperDefaultVertical,swiperDefaultPageBar,swiperDefaultText 
+            },
         data() {
             return {
+                swiperOption:{
+                    slidesPerView: 2,
+                },
                 locationIcon: require('../../assets/images/location.png'),  // 图片直接require进来 一边 build 打包的时候不出错
                 swpPicArr:[
                     {imgUrl:require('./../../assets/images/swpPic001.jpg')},
                     {imgUrl:require('./../../assets/images/swpPic002.jpg')},
                     {imgUrl:require('./../../assets/images/swpPic003.jpg')}
                 ],
-                category:[],
-
+                category:[], // 产品分类
+                recommendGoods:[], // 推荐商品
+                floor1:[], // 一层商品(vue对多维数组取值 不友好 需要把下面的键 放到几个变量中))
+                floor1_0:[], 
+                floor1_1:[], 
+                floor1_2:[], 
+                floor1_3:[], 
             }
         },
-
+       
         created(){
             axios({
                 url: 'https://www.easy-mock.com/mock/5b8e1d49ae6b714d1bc700c9/hahavue/goodsList/',
@@ -73,8 +122,17 @@
             .then(res => {
                 console.log(res)
                 if (res.status==200) {
-                    this.category=res.data.data.category;
+                    let resData = res.data.data
+                    this.category = resData.category;
+                    this.recommendGoods = resData.recommend;
+                    this.floor1 = resData.floor1;
+
+                    // this.floor1_0 = resData.floor1[0];
+                    // this.floor1_1 = resData.floor1[1];
+                    // this.floor1_2 = resData.floor1[2];
+                    // this.floor1_3 = resData.floor1[3];
                 }
+
             })
             .catch((error) => {     
                 console.log(error)
@@ -128,15 +186,14 @@
 .swipe-pic{
     width: 100%;
     clear:both;
+    overflow: hidden;
+    max-height:15rem;
 }
 .swp-box{
     /*处理轮播下方点点位置*/
     height: 9rem;
 }
-.recommend{
-    background-color: #fff;
-    margin-top: 3rem;
-}
+/*flex  布局 详解 http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html */
 .type-bar{
     background-color: #fff;
     margin:.3rem ;
@@ -145,7 +202,6 @@
     display: flex;
     flex-direction:row;
     flex-wrap:nowrap;
-    /*flex  布局 详解 http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html */
 }
 .type-bar div{
     padding: .3rem;
@@ -156,9 +212,26 @@
     width: 20%;
     margin: 0.1rem;
 }
+
+.recommend{
+    background-color: #fff;
+    margin-top: .3rem;
+}
 .rcmd-title{
     border-bottom: 1px solid #eee;
+    font-size: 14px;
+    padding: 0.2rem;
+    color:#e5017d;
 }
-
+.rcmd-body{
+    width: 20rem;
+    border-bottom: 1px solid #eee;
+}
+.rcmd-item{
+    width:99%;
+    border-right:1px solid #eee;
+    font-size:12px;
+    text-align: center;
+}
 
 </style>
