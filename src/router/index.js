@@ -1,14 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import ShoppingMail from '@/components/pages/ShoppingMail'
+import ShoppingMall from '@/components/pages/ShoppingMall'
+import Register from '@/components/pages/Register'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     
-    {path:'/', name:'ShoppingMail', component:ShoppingMail},
+    {path:'/', name:'ShoppingMall', component:ShoppingMall},
+
+    {path:'/register', name:'Register', component:Register},
 
   ]
 })

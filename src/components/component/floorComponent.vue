@@ -62,6 +62,7 @@
     flex-direction:row;
     background-color: #fff;
     border-bottom:1px solid #ddd;
+    justify-content:center;
 }
 .floor-anomaly div{
     width:10rem;
@@ -79,6 +80,7 @@
     flex-direction: row;
     flex-wrap:wrap;
     background-color: #fff;
+    justify-content:center;
 }
 .floor-rule div{
     -webkit-box-sizing: border-box;

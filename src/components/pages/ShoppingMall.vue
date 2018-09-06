@@ -63,7 +63,20 @@
         <floorComponent :floorData="floor1" :floorTitle="floorName.floor1"></floorComponent>
         <floorComponent :floorData="floor2" :floorTitle="floorName.floor2"></floorComponent>
         <floorComponent :floorData="floor3" :floorTitle="floorName.floor3"></floorComponent>
-        
+
+        <!-- 热卖商品 -->
+        <div class="hot">
+            <div class="hot-title">热卖商品</div>
+            <div class="hot-goods">
+                <van-list>
+                    <van-row gutter="20">
+                        <van-col span="12" v-for="(item,index) in hotGoods" :key="index">
+                            <goods-info-component :goodsName="item.name" :goodsImg="item.image" :goodsPrice="item.price"></goods-info-component>
+                        </van-col>
+                    </van-row>
+                </van-list>
+            </div>
+        </div>
 
 
     </div>
@@ -71,27 +84,24 @@
 
 <script>
     import axios from 'axios'
-
     // 引入  vue-awesome-swiper
     import 'swiper/dist/css/swiper.css'
     import { swiper, swiperSlide } from "vue-awesome-swiper"
-
-    // 引入自己封装的各种样式的滑动 组件
-    /*import swiperDefault from '../swiper/swiperDefault'
-    import swiperDefaultVertical from '../swiper/swiperDefault-vertical'
-    import swiperDefaultPageBar from '../swiper/swiperDefault-pageBar'
-    import swiperDefaultText from '../swiper/swiperDefault-text' */
-
+    // 引入自己封装的各种样式的滑动 组件    /*import swiperDefault from '../swiper/swiperDefault'    import swiperDefaultVertical from '../swiper/swiperDefault-vertical'import swiperDefaultPageBar from '../swiper/swiperDefault-pageBar'import swiperDefaultText from '../swiper/swiperDefault-text' */
     // 引入 自己做的 floor 组件
     import floorComponent from '../component/floorComponent'
-
     // 引入 金额相关计算函数
     import { toMoney } from '@/filter/moneyFilter.js'// @代表的是src目录,在/build/webpack.base.conf.js配置
+    // 引入 产品信息 组件
+    import goodsInfoComponent from '../component/goodsInfoComponent'
+    // 引入 url 常量
+    import url from '@/serviceApi.conf.js'
 
     export default {
+        
         // 输出允许使用  vue-awesome-swiper 
         components:{ 
-            swiper, swiperSlide, floorComponent,   
+            swiper, swiperSlide, floorComponent, goodsInfoComponent,
             /*这是自己封装的 滑动组件*/
             // swiperDefault,swiperDefaultVertical,swiperDefaultPageBar,swiperDefaultText 
             },
@@ -112,12 +122,16 @@
                 floor2:[], // 
                 floor3:[], // 
                 floorName:[],
+                hotGoods:[],
+                loading: false,
+      finished: false
             }
         },
        
         created(){
             axios({
-                url: 'https://www.easy-mock.com/mock/5b8e1d49ae6b714d1bc700c9/hahavue/goodsList/',
+                // url: 'https://www.easy-mock.com/mock/5b8e1d49ae6b714d1bc700c9/hahavue/goodsList/',
+                url: url.getGoodsInfo,
                 method: 'get',
             })
             .then(res => {
@@ -130,12 +144,13 @@
                     this.floor2 = resData.floor2;
                     this.floor3 = resData.floor3;
                     this.floorName = resData.floorName;
-
+                    this.hotGoods = resData.hotGoods           
                 }
 
             })
             .catch((error) => {     
                 console.log(error)
+                alert('产品数据异常')
             })
         },
         
@@ -201,7 +216,6 @@
     width: 20%;
     margin: 0.1rem;
 }
-
 .recommend{
     background-color: #fff;
     margin-top: .3rem;
@@ -213,7 +227,8 @@
     color:#e5017d;
 }
 .rcmd-body{
-    width: 20rem;
+    /* width: 20rem; */
+    width: 100%;
     border-bottom: 1px solid #eee;
 }
 .rcmd-item{
@@ -222,5 +237,24 @@
     font-size:12px;
     text-align: center;
 }
-
+.hot{
+    text-align: center;
+    font-size:14px;
+    height: 1.8rem;
+    line-height:1.8rem;
+}
+.hot-title{
+    color:#e5017d;
+    font-weight: 600;
+}
+.hot-goods{
+    height: 130rem;
+    overflow: hidden;
+    background-color: #fff;
+}
+.hot .van-col{
+    border-bottom: #eee 1px solid;
+    border-right: #eee 1px solid;
+}
+    
 </style>
