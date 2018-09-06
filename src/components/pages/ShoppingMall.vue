@@ -46,7 +46,7 @@
                             <!-- <img v-lazy="item.image" width="80%" /> -->
                             <img :src="item.image" width="80%" />
                             <div>{{item.goodsName}}</div>
-                            <div>￥{{item.price}} (￥{{item.mallPrice}})</div>
+                            <div>￥{{item.price | moneyFilter}} (￥{{item.mallPrice | moneyFilter}})</div>
                         </div>
                     </swiper-slide>
                 </swiper>            
@@ -60,7 +60,9 @@
         </div>
 
         <!-- 商品楼层 -->
-        <floorComponent :floorData="floor1"></floorComponent>
+        <floorComponent :floorData="floor1" :floorTitle="floorName.floor1"></floorComponent>
+        <floorComponent :floorData="floor2" :floorTitle="floorName.floor2"></floorComponent>
+        <floorComponent :floorData="floor3" :floorTitle="floorName.floor3"></floorComponent>
         
 
 
@@ -75,16 +77,16 @@
     import { swiper, swiperSlide } from "vue-awesome-swiper"
 
     // 引入自己封装的各种样式的滑动 组件
-    /*
-    import swiperDefault from '../swiper/swiperDefault'
+    /*import swiperDefault from '../swiper/swiperDefault'
     import swiperDefaultVertical from '../swiper/swiperDefault-vertical'
     import swiperDefaultPageBar from '../swiper/swiperDefault-pageBar'
-    import swiperDefaultText from '../swiper/swiperDefault-text'
-    */
+    import swiperDefaultText from '../swiper/swiperDefault-text' */
 
-   // 引入 自己做的 floor 组件
-   import floorComponent from '../component/floorComponent'
+    // 引入 自己做的 floor 组件
+    import floorComponent from '../component/floorComponent'
 
+    // 引入 金额相关计算函数
+    import { toMoney } from '@/filter/moneyFilter.js'// @代表的是src目录,在/build/webpack.base.conf.js配置
 
     export default {
         // 输出允许使用  vue-awesome-swiper 
@@ -107,10 +109,9 @@
                 category:[], // 产品分类
                 recommendGoods:[], // 推荐商品
                 floor1:[], // 一层商品(vue对多维数组取值 不友好 需要把下面的键 放到几个变量中))
-                floor1_0:[], 
-                floor1_1:[], 
-                floor1_2:[], 
-                floor1_3:[], 
+                floor2:[], // 
+                floor3:[], // 
+                floorName:[],
             }
         },
        
@@ -126,37 +127,25 @@
                     this.category = resData.category;
                     this.recommendGoods = resData.recommend;
                     this.floor1 = resData.floor1;
+                    this.floor2 = resData.floor2;
+                    this.floor3 = resData.floor3;
+                    this.floorName = resData.floorName;
 
-                    // this.floor1_0 = resData.floor1[0];
-                    // this.floor1_1 = resData.floor1[1];
-                    // this.floor1_2 = resData.floor1[2];
-                    // this.floor1_3 = resData.floor1[3];
                 }
 
             })
             .catch((error) => {     
                 console.log(error)
             })
-
-            // fetch 获取列表数据
-            // fetch('https://www.easy-mock.com/mock/5b8e1d49ae6b714d1bc700c9/hahavue/goodsList/' , {
-            //     method: 'GET',
-            //     headers: new Headers({
-            //         'Accept': 'application/json' // 通过头指定，获取的数据类型是JSON
-            //     }),
-            // })
-            // .then((res)=>{
-            //     return res.json();
-            // })
-            // .then((res)=>{
-            //     console.log(res);
-            // })
-            // .catch((error) => {     
-            //     console.log(error);
-            // })
-            
-
         },
+        
+        filters:{
+            moneyFilter(money){
+                return toMoney(money);
+            }
+        },
+
+
     }
 </script>
 
