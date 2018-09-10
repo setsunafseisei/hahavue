@@ -12,8 +12,12 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    // import axios from 'axios'
     import url from '@/serviceApi.conf'
+    import { encryptPwd } from '@/assets/js/common.js'
+
+    console.log(url.registerUser);
+    
     export default {
         data(){
             return{
@@ -21,12 +25,20 @@
                 password: '',
             }
         },
+        computed:{
+            crypt_password : function(){
+                return this.password = encryptPwd(this.password);
+            }
+        },
         methods:{
             goBack(){
                 this.$route.go(-1);
             },
             register(){
-                axios({
+                this.$axios({
+                    // headers: {
+                    //     'Content-Type': 'application/x-www-form-urlencoded'
+                    // },
                     url:url.registerUser,
                     method:'post',
                     data:{

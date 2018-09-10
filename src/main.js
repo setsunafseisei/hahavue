@@ -3,6 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios';
+
+Vue.prototype.$axios=axios;
+
 // 直接引入 vant 库 和 vant 样式
 /*
 import Vant from 'vant'
@@ -15,7 +19,6 @@ import {Button, Col, Row, Swipe, SwipeItem, Lazyload, Cell, Field, NavBar, } fro
 
 Vue.use(Button).use(Col).use(Row).use(Swipe).use(SwipeItem).use(Lazyload).use(Cell).use(Field).use(NavBar)
 
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
@@ -25,3 +28,5 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+

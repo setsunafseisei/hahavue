@@ -124,7 +124,7 @@
                 floorName:[],
                 hotGoods:[],
                 loading: false,
-      finished: false
+                finished: false
             }
         },
        
