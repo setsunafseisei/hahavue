@@ -2,10 +2,10 @@
     <div class="register">
         <van-nav-bar title="用户注册" left-text="返回" left-arrow @click="goBack" />
         <div class="register-panel">
-            <van-field lable="用户名" v-model="username" icon="clear" placeholder="请输入用户名" required @click-icon="username=''" />        
+            <van-field lable="手机号" v-model="phone" icon="clear" placeholder="请输入手机号" required @click-icon="phone=''" />        
             <van-field lable="密码" v-model="password" placeholder="请输入密码" required />
             <div class="register-btn">
-                <van-button type="primary" @click="register" size="large">马上注册</van-button>
+                <van-button type="primary" @click="register" size="large" >马上注册</van-button>
             </div>
         </div>   
     </div>
@@ -21,7 +21,7 @@
     export default {
         data(){
             return{
-                username: '',
+                phone: '',
                 password: '',
             }
         },
@@ -39,19 +39,27 @@
                     // headers: {
                     //     'Content-Type': 'application/x-www-form-urlencoded'
                     // },
-                    url:url.registerUser,
+                    url:url.registerUser,   
                     method:'post',
                     data:{
-                        username:this.username,
+                        phone:this.phone,
                         password:this.password,
                     }
                 })
                 .then(res => {
-                    console.log(res);
+                    res = res.data;
+                    if (res.code==0) {
+                        alert(res.msg)
+                    } else {
+                        var data = res.data;
+                        console.log(data);
+                        alert(res.msg)
+                    }
+                    
                 })
                 .catch(err=>{
                     console.log(err);
-                    alert('register fail')
+                    // alert('register fail')
                 })
             }
         },
