@@ -7,6 +7,7 @@ const LOCALURL = '/api/'
 const URL = {
     getGoodsInfo:BASEURL + 'goodsList',
     registerUser:LOCALURL+'register',   //用户注册接口
+    userLogin:LOCALURL+'login',   //用户登录接口
 }
 
 module.exports = URL

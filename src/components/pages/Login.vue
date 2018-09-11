@@ -1,27 +1,23 @@
 <template>
-    <div class="register">
-        <van-nav-bar title="用户注册" left-text="返回" left-arrow @click="goBack" />
-        <div class="register-panel">
-            <!-- 在input框上显示错误 -->
-            <!-- <van-field lable="手机号" v-model="phone" icon="clear" placeholder="请输入手机号" required @click-icon="phone=''" :error-message="phoneErr"/>        
-            <van-field lable="密码" v-model="password" placeholder="请输入密码" required v-if="phoneErr" />
-            <van-field lable="密码" v-model="password" placeholder="请输入密码" required v-else :error-message="passwordErr"/> -->
-            <!-- 利用弹层显示错误 -->
+    <div class="login">
+        <van-nav-bar title="用户登录" left-text="返回" left-arrow @click="goBack" />
+        <div class="login-panel">
             <van-field lable="手机号" v-model="phone" icon="clear" placeholder="请输入手机号" required @click-icon="phone=''" />
             <van-field lable="密码" v-model="password" placeholder="请输入密码" required />
-            <div class="register-btn">
-                <van-button type="primary" @click="registerAction" size="large" :loading="openLoading">马上注册</van-button>
+            <div class="login-btn">
+                <van-button type="primary" @click="loginAction" size="large" :loading="openLoading">登录</van-button>
             </div>
         </div>   
     </div>
 </template>
 
+
 <script>
-    // import axios from 'axios'
     import url from '@/serviceApi.conf'
     import { encryptPwd } from '@/assets/js/common.js' // rsa 加密函数
     import { Toast } from 'vant' // 弹层
 
+    
     export default {
         data(){
             return{
@@ -33,14 +29,15 @@
             }
         },
         methods:{
-            registerAction(){
-                this.checkForm() && this.register()
+            loginAction(){
+                this.checkForm() && this.login()
             },
-            // 注册
-            register(){
+            // 登录
+            login(){
                 this.openLoading = true
                 this.$axios({
-                    url:url.registerUser,   
+                    
+                    url:url.userLogin,   
                     method:'post',
                     data:{
                         phone:this.phone,
@@ -66,7 +63,7 @@
                 })
                 .catch(err=>{
                     console.log(err);
-                    Toast.fail('register fail')
+                    Toast.fail('login fail')
                     this.openLoading=false
                 })
             },
@@ -80,10 +77,9 @@
                 } else {
                     this.phoneErr =""
                 }
-                console.log(this.phoneErr);
                 
-                if (this.password.length<6 | this.password.length>16) {
-                    this.passwordErr="密码最少6位,最大16位"
+                if (this.password.length<6) {
+                    this.passwordErr="密码最少为6位"
                     if (!this.phoneErr){
                         Toast.fail(this.passwordErr)
                     }
@@ -104,13 +100,13 @@
 </script>
 
 <style scoped>
-.register-panel{
+.login-panel{
     width:96%;
     border-radius: 5px;
     margin:20px auto;
     padding-bottom:50px;
 }
-.register-btn{
+.login-btn{
     padding-top:10px;
 }
 </style>

@@ -5,7 +5,7 @@ import App from './App'
 import router from './router'
 import axios from 'axios';
 
-Vue.prototype.$axios=axios;
+Vue.prototype.$axios=axios; // 把 axios 做成全局变量 通过  this.$axios  调用
 
 // 直接引入 vant 库 和 vant 样式
 /*
