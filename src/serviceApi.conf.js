@@ -9,8 +9,8 @@ const URL = {
     registerUser:LOCALURL+'register',   //用户注册接口
     userLogin:LOCALURL+'login',   //用户登录接口
     getGoodDetail:LOCALURL+'goodInfo', // 获取产品详情接口 post id
-    categoryList:LOCALURL+'goods/categoryList', // 获取产品分类 
-    getSubCateGoods:LOCALURL+'goods/goodsList', // 获取产品列表（根据对应条件） 
+    categoryList:LOCALURL+'Goods/categoryList', // 获取产品分类 
+    getSubCateGoods:LOCALURL+'Goods/goodsList', // 获取产品列表（根据对应条件） 
 }
 
 module.exports = URL

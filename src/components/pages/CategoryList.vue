@@ -34,8 +34,9 @@
                             :finished="finished"
                             @load="onLoad"
                             >
-                                <div class="list-item" v-for="item in list" :key="item">
-                                    {{item}}
+                                <div class="list-item" v-for="item in list" :key="item.id">
+                                <!-- <div class="list-item" v-for="item in list"> -->
+                                    {{item.name}}
                                 </div>
 
                             </van-list>
@@ -67,6 +68,9 @@
                 if(this.category.length>0) {
                     this.getCategorySubByCategoryId();
                 }
+                if(this.categorySub.length>0) {
+                    this.getSubCateGoods(0,0)
+                }
             }).catch((err)=>{
                 console.log(err)
             })
@@ -74,9 +78,20 @@
 
         },
         methods:{
+            // 产品列表数据获取
             getSubCateGoods(index, title){
+                // console.log(index);
+                // console.log(title);
+                // console.log(this.categorySub);
+                
                 let activeCateSub = this.categorySub[index];// 通过循环的索引找到当前选中对象
-                let sub_id = activeCateSub.sub_id , id = activeCateSub.id 
+                let sub_id = activeCateSub.sub_id , id = activeCateSub.id
+
+                this.goodList=[]
+                this.finished = false
+                this.page=1
+                this.onLoad()
+
                 this.$axios({
                     url:url.getSubCateGoods,
                     method:"post",
@@ -84,24 +99,29 @@
                         sub_id:sub_id,
                         id:id,
                         token:localStorage['token'],
+                        page:this.page
                     }
-                })
-                
-                
-            },
-            getCategoryList(){
-                this.$axios({
-                    url:url.categoryList,
-                    method:'post',
-                    data:{
-                        token:localStorage['token'],
-                    }
-                })
-                .then(res=>{
+                }).then(res=>{
                     var res = res.data;
 
+                    var old_sub_id = res.data.data[0].sub_id
+                    
                     if (res.code==1) {
-                        this.category = res.data
+                        var list = res.data.data
+                        
+                        if (this.page >= list.last_page) {
+                            this.finished = true;
+                        } else {
+
+                            // 本次请求的 sub_id 和 上一次请求 sub_id 不通则 更新this.list  否则为追加
+                            if (this.list[0].sub_id != old_sub_id) {
+                                this.list = list
+                            } else {
+                                this.list = this.list.concat(list) // 每一页的数据都要追加给 this.list
+                                this.page++
+                            }
+                            
+                        }
                     } else if (res.code==0) {
                         Toast.fail(res.msg)
                         if (res.err_code==1007) {
@@ -112,16 +132,55 @@
                     } else {
                         Toast.fail('网络错误')
                     }
-                })
-                .catch(err=>{
+
+                    this.loading=false;
+
+                }).catch(err=>{
                     console.log(err);  
-                    Toast.fail('网络错误')
+                    // Toast.fail('网络错误')
+                })
+                
+                
+            },
+            // 分类数据获取
+            getCategoryList(){
+                this.$axios({
+                    url:url.categoryList,
+                    method:'post',
+                    data:{
+                        token:localStorage['token'],
+                    }
+                }).then(res=>{
+                    var res = res.data;
+                    if (res.code==1) {
+                        this.category = res.data
+                    } else if (res.code==0) {
+                        Toast.fail(res.msg)
+                        if (res.err_code==1007) {
+                            this.$router.push({name:'Login'})
+                        } else {
+                            console.log(1);
+                            
+                            Toast.fail('网络错误')
+                        }
+                    } else {
+                            console.log(2);
+                        Toast.fail('网络错误')
+                    }
+                }).catch(err=>{
+                    console.log(err);  
+                    // Toast.fail('网络错误')
                 })
             },
+            // 点击大类 自动 输出子类数据
             clickCategory(index,categoryId){
                 this.categoryIndex=index
+                this.page=1
+                this.finished = false
+                this.list=[]
                 this.getCategorySubByCategoryId(categoryId)
             },
+            // 获取子类数据
             getCategorySubByCategoryId(categoryId=1){
                 // console.log(categoryId);
                 // console.log(this.category);
@@ -134,6 +193,7 @@
                     }                    
                 });
             },
+
             onLoad() {
                 setTimeout(() => {
 
@@ -167,6 +227,7 @@
                 finished:false,  //下拉加载是否没有数据了
                 // PullRefresh vant组件
                 isRefresh:false, //下拉加载
+                
             }
         },
 
