@@ -15,9 +15,11 @@ Vue.use(Vant)
 */
 
 // 使用 babel-plugin-import 按需求 引入 vant 中对应的组件（不需要专门引入样式）
-import {Button, Col, Row, Swipe, SwipeItem, Lazyload, Cell, Field, NavBar, } from 'vant' 
+import {Button, Col, Row, Swipe, SwipeItem, Lazyload, Cell, Field, NavBar,Tabs,Tab,List,PullRefresh  } from 'vant' 
 
-Vue.use(Button).use(Col).use(Row).use(Swipe).use(SwipeItem).use(Lazyload).use(Cell).use(Field).use(NavBar)
+Vue.use(Button).use(Col).use(Row).use(Swipe).use(SwipeItem).use(Lazyload).use(Cell).use(Field).use(NavBar).use(Tabs).use(Tab)
+.use(List).use(PullRefresh)
+
 
 Vue.config.productionTip = false
 

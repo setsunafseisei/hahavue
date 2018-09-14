@@ -3,7 +3,7 @@
         <van-nav-bar title="用户登录" left-text="返回" left-arrow @click="goBack" />
         <div class="login-panel">
             <van-field lable="手机号" v-model="phone" icon="clear" placeholder="请输入手机号" required @click-icon="phone=''" />
-            <van-field lable="密码" v-model="password" placeholder="请输入密码" required />
+            <van-field lable="密码" type="password" v-model="password" placeholder="请输入密码" required />
             <div class="login-btn">
                 <van-button type="primary" @click="loginAction" size="large" :loading="openLoading">登录</van-button>
             </div>
@@ -49,9 +49,20 @@
 
                     if (res.code==1) {
                         var data = res.data;
-                        console.log(data);
-                        Toast.success(res.msg)
-                        this.$router.push('/')
+
+                        new Promise((resolve,reject)=>{
+                                localStorage.token = data.token
+                                setTimeout(()=>{
+                                    resolve()
+                                },500)
+                        }).then(()=>{
+                                Toast.success(res.msg)
+                                this.$router.push('/')
+                        }).catch(err=>{
+                                Toast.fail('登录状态保存失败')
+                                console.log(err)
+                        })
+
                     } else if (res.code==0) {
                         Toast.fail(res.msg)
                         this.openLoading=false

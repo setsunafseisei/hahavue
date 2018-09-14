@@ -8,7 +8,7 @@
             <van-field lable="密码" v-model="password" placeholder="请输入密码" required v-else :error-message="passwordErr"/> -->
             <!-- 利用弹层显示错误 -->
             <van-field lable="手机号" v-model="phone" icon="clear" placeholder="请输入手机号" required @click-icon="phone=''" />
-            <van-field lable="密码" v-model="password" placeholder="请输入密码" required />
+            <van-field lable="密码" type="password" v-model="password" placeholder="请输入密码" required />
             <div class="register-btn">
                 <van-button type="primary" @click="registerAction" size="large" :loading="openLoading">马上注册</van-button>
             </div>
