@@ -36,7 +36,7 @@
                             @load="onLoad"
                             >
                             <div class="list-item" v-for="(item,index) in list" :key="index">
-                                <div class="list-item-img"><img :src="item.image1" width="100%"/></div>
+                                <div class="list-item-img"><img :src="item.image1" :onerror="errorImg" width="100%"/></div>
                                 <div class="list-item-text">
                                     <div>{{item.name}}</div>
                                     <div class="">￥{{item.ori_price}}</div>
@@ -134,7 +134,7 @@
                         this.categorySub = res.data
                         this.active=0
                         this.categorySubId = this.categorySub[0].sub_id
-                        this.onLoad()
+                        // this.onLoad()
                     } else if (res.code==0) {
                         Toast.fail(res.msg)
                         if (res.err_code==1007) {
@@ -151,6 +151,7 @@
                     console.log(err);
                 })
             },
+            // 点击获取 当前选中子类的 属性值 以便传给 查询产品的接口
             onClickCategorySub(index,title){
                 this.categorySubId = this.categorySub[index].sub_id
                 // console.log('categorySubId:'+this.categorySubId)
@@ -164,7 +165,7 @@
                 // console.log(this.categorySubId);
                 
                 this.$axios({
-                    url:url.getSubCateGoods,
+                    url:url.getSubCateGoodsList,
                     method:"post",
                     data:{
                         category_sub_id:this.categorySubId,
@@ -176,19 +177,31 @@
                     var list = res.data.data
 
                     if (res.code==1) {
+
                         this.page++
-                        this.list=this.list.concat(list)
+
+                        console.log(this.list);
+                        console.log(list);
+                        
+
+                        if (this.page > res.data.last_page){
+                            this.list=list
+                            this.finished = true
+                        } else {
+                            this.list=this.list.concat(list)
+                        }
 
                     } else if (res.code==0) {
                         Toast.fail(res.msg)
                         if (res.err_code==1007) {
                             this.$router.push({name:'Login'})
                         } else {
+                            this.finished = true
                             Toast.fail('网络错误')
                         }
                     } else {                     
-                        // Toast.fail('网络错误')
                         this.finished = true
+                        Toast.fail('网络错误')
                     }
 
                     this.loading=false;
@@ -209,9 +222,11 @@
             //下拉刷新方法
             onRefresh(){
                 setTimeout(() => {
+                    this.page=1
                     this.isRefresh = false;
+                    this.finished = false;
                     this.list=[];
-                    // this.onLoad()    
+                    this.onLoad()    
                 }, 500);
             }
         },
@@ -229,8 +244,7 @@
                 isRefresh:false, //下拉加载
                 page:1,
                 categorySubId:'', // 子类分类 id
-                categorySubIndex : 0
-                
+                errorImg:'this.src="' + require('@/assets/images/errorimg.png') + '"'   ,  //错误图片显示路径
             }
         },
 
@@ -245,14 +259,25 @@
 
 <style scoped>
     .list-item{
-        text-align: center;
-        line-height: 80px;
+        display: flex;
+        flex-direction: row;
+        font-size:0.8rem;
         border-bottom: 1px solid #f0f0f0;
         background-color: #fff;
+        padding:5px;
     }
     #list-div{
         overflow: scroll;
     }
+    .list-item-img{
+        flex:8;
+    }
+    .list-item-text{
+        flex:16;
+        margin-top:10px;
+        margin-left:10px;
+    }
+
     #leftNav{
         font-size: 0.8rem;
         line-height: 2rem;

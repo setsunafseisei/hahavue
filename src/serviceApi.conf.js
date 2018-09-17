@@ -11,7 +11,7 @@ const URL = {
     getGoodDetail:LOCALURL+'goodInfo', // 获取产品详情接口 post id
     categoryList:LOCALURL+'Goods/categoryList', // 获取产品分类 
     categorySubList:LOCALURL+'Goods/categorySubList', // 获取产品分类 
-    getSubCateGoods:LOCALURL+'Goods/goodsList', // 获取产品列表（根据对应条件） 
+    getSubCateGoodsList:LOCALURL+'Goods/goodsList', // 获取产品列表（根据对应条件） 
 }
 
 module.exports = URL
