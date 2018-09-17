@@ -35,7 +35,7 @@
                             :finished="finished"
                             @load="onLoad"
                             >
-                            <div class="list-item" v-for="(item,index) in list" :key="index">
+                            <div class="list-item" v-for="(item,index) in list" :key="index" @click="goodsInfo(item.id)">
                                 <div class="list-item-img"><img :src="item.image1" :onerror="errorImg" width="100%"/></div>
                                 <div class="list-item-text">
                                     <div>{{item.name}}</div>
@@ -116,6 +116,7 @@
             },
             // 点击大类 自动 输出子类数据
             clickCategory(index,categoryId){
+                this.clickable = false;
                 this.categoryIndex=index
                 this.page=1
                 this.finished = false
@@ -124,6 +125,7 @@
             },
             // 获取子类 列表 数据
             getCategorySubByCategoryId(categoryId=1){
+                
                 this.$axios({
                     method:'post',
                     url:url.categorySubList,
@@ -208,8 +210,12 @@
 
                 }).catch(err=>{
                     console.log(err);  
+                    this.$router.go(0)
                     // Toast.fail('网络错误')
                 })              
+            },
+            goodsInfo(id){
+                this.$router.push({name:'GoodDetail',params:{goodsId:id}})
             },
             //上拉加载方法
             onLoad() {
@@ -245,6 +251,7 @@
                 page:1,
                 categorySubId:'', // 子类分类 id
                 errorImg:'this.src="' + require('@/assets/images/errorimg.png') + '"'   ,  //错误图片显示路径
+                clickable:true // 是否可点击
             }
         },
 

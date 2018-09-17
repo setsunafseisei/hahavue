@@ -36,7 +36,7 @@
 
         <div class="goods-bottom">
             <div>
-                <van-button size="large" type="primary">加入购物车</van-button>
+                <van-button size="large" type="primary" @click="addGoodsToCart">加入购物车</van-button>
             </div>
             <div>
                 <van-button size="large" type="danger">直接购买</van-button>
@@ -60,7 +60,7 @@
         created(){
             
             // 获取 页面 传递的 数据
-            this.goodsId = this.$route.query.goodsId
+            this.goodsId = this.$route.query.goodsId ? this.$route.query.goodsId : this.$route.params.goodsId
             console.log(this.goodsId);
             
             // 去后端接口 查数据
@@ -73,6 +73,34 @@
             }
         },
         methods:{
+            // 加入购物车操作
+            addGoodsToCart(){
+                let cartInfo = localStorage.cartInfo? JSON.parse(localStorage.cartInfo):[]
+                let isHave = cartInfo.find(cart=>cart.goodsId == this.goodsId) // cart 是代替 cartInfo 的形参
+                console.log(isHave);
+
+                if (!isHave) {
+                    // 没有该商品则直接添加进数组
+                    // 放进一个新对象 来直接添加进 购物车
+                    let newGoodsInfo = {
+                        goodsId : this.goodsInfo.id,
+                        name : this.goodsInfo.name,
+                        price : this.goodsInfo.present_price,
+                        image : this.goodsInfo.image1,
+                        count:1,
+                    }
+
+                    cartInfo.push(newGoodsInfo) // 新对象添加到购物车中
+                    localStorage.cartInfo = JSON.stringify(cartInfo) // 在本地缓存 加入购物车信息
+                    Toast.success('添加成功')
+                } else {
+                    Toast.success('已有该产品')
+                }
+
+                this.$router.push({name:'Cart'})
+                
+            },
+            // 获取当前商品详情
             getInfo(){
                 this.$axios({
                     
