@@ -34,12 +34,14 @@
                             :finished="finished"
                             @load="onLoad"
                             >
-                                <div class="list-item" v-for="item in list" :key="item.id">
-                                <!-- <div class="list-item" v-for="item in list"> -->
-                                    {{item.name}}
+                            <div class="list-item" v-for="(item,index) in list" :key="index">
+                                <div class="list-item-img"><img :src="item.image1" width="100%"/></div>
+                                <div class="list-item-text">
+                                    <div>{{item.name}}</div>
+                                    <div class="">￥{{item.ori_price}}</div>
                                 </div>
-
-                            </van-list>
+                            </div>
+                        </van-list>
 
                         </van-pull-refresh>
                     </div>
@@ -63,12 +65,14 @@
             new Promise((resolve,reject)=>{
                 setTimeout(()=>{
                     resolve()
-                },800)
+                },100)
             }).then(()=>{
                 if(this.category.length>0) {
                     this.getCategorySubByCategoryId();
                 }
                 if(this.categorySub.length>0) {
+                    
+                    console.log('created')
                     this.getSubCateGoods(0,0)
                 }
             }).catch((err)=>{
@@ -78,19 +82,26 @@
 
         },
         methods:{
-            // 产品列表数据获取
+            // 根据选择的子类 获取产品列表数据
             getSubCateGoods(index, title){
                 // console.log(index);
                 // console.log(title);
-                // console.log(this.categorySub);
+                console.log(this.categorySub);
+                console.log(5555);
+                console.log(this.categorySub[index]);
+
+                this.categorySubIndex = index
                 
                 let activeCateSub = this.categorySub[index];// 通过循环的索引找到当前选中对象
-                let sub_id = activeCateSub.sub_id , id = activeCateSub.id
+                
+
+                let sub_id = activeCateSub.sub_id ? activeCateSub.sub_id : 1 , id = activeCateSub.id ? activeCateSub.id : 1
+                
+                this.sub_id = sub_id
 
                 this.goodList=[]
                 this.finished = false
-                this.page=1
-                this.onLoad()
+                // this.page=1
 
                 this.$axios({
                     url:url.getSubCateGoods,
@@ -102,26 +113,46 @@
                         page:this.page
                     }
                 }).then(res=>{
+
+                    console.log('res:');
+                    console.log(res);
+                    
                     var res = res.data;
 
-                    var old_sub_id = res.data.data[0].sub_id
+                    var old_sub_obj = res.data.data
+
+                    var old_sub_id = old_sub_obj.length ? old_sub_obj[0].sub_id : sub_id;
                     
                     if (res.code==1) {
                         var list = res.data.data
+
                         
                         if (this.page >= list.last_page) {
                             this.finished = true;
                         } else {
+                            var new_sub_id = this.list.length!=0 ? this.list[0].sub_id : this.sub_id
 
+                            console.log(new_sub_id);
+                            console.log(333);
+                            console.log(old_sub_id);
+                            
                             // 本次请求的 sub_id 和 上一次请求 sub_id 不通则 更新this.list  否则为追加
-                            if (this.list[0].sub_id != old_sub_id) {
+                            if (new_sub_id != old_sub_id) {
+                                this.page = 1
                                 this.list = list
                             } else {
-                                this.list = this.list.concat(list) // 每一页的数据都要追加给 this.list
+                                
+                                this.list = this.list? this.list.concat(list) : list // 每一页的数据都要追加给 this.list
                                 this.page++
+                                console.log(this.list);
+                                console.log('page:'+this.page);
+
+                                // this.getSubCateGoods(index, title); // 继续获取数据
+
                             }
-                            
                         }
+
+
                     } else if (res.code==0) {
                         Toast.fail(res.msg)
                         if (res.err_code==1007) {
@@ -159,12 +190,10 @@
                         if (res.err_code==1007) {
                             this.$router.push({name:'Login'})
                         } else {
-                            console.log(1);
                             
                             Toast.fail('网络错误')
                         }
                     } else {
-                            console.log(2);
                         Toast.fail('网络错误')
                     }
                 }).catch(err=>{
@@ -187,31 +216,34 @@
                 this.category.forEach(each => {
                     if (each.id == categoryId) {
                         this.categorySub = each.goods_category_sub
-                        // console.log(this.categorySub);
                         this.active=0
-                        // this.onLoad()
                     }                    
                 });
             },
 
             onLoad() {
                 setTimeout(() => {
+                    console.log('onload')
+                    console.log('this.categoryIndex')
+                    console.log(this.categorySubIndex)
 
-                    for (let i = 0; i < 10; i++) {
-                        this.list.push(this.list.length + 1);
-                    }
-                    this.loading = false;
+                    var categorySubObj = this.categorySub[this.categorySubIndex]
 
-                    if (this.list.length >= 40) {
-                        this.finished = true;
-                    }
+                    // console.log('categorySubObj:');
+                    // console.log(categorySubObj);
+                    // console.log('this.categorySub:');
+                    // console.log(this.categorySub);
+                    
+                    this.sub_id=this.sub_id ? this.sub_id:this.categorySub[0].id
+                    // this.getSubCateGoods()  // todo   检查页码加载数据问题时看看
+
                 }, 500);
             },
             onRefresh(){
                 setTimeout(() => {
                     this.isRefresh = false;
                     this.list=[];
-                    this.onLoad()
+                    // this.onLoad()    
                 }, 500);
             }
         },
@@ -227,6 +259,10 @@
                 finished:false,  //下拉加载是否没有数据了
                 // PullRefresh vant组件
                 isRefresh:false, //下拉加载
+                page:1,
+                sub_id:'', // 子类id
+
+                categorySubIndex : 0
                 
             }
         },

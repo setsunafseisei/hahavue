@@ -5,7 +5,8 @@ import ShoppingMall from '@/components/pages/ShoppingMall'
 import Register from '@/components/pages/Register'
 import Login from '@/components/pages/Login'
 import GoodDetail from '@/components/pages/GoodDetail'
-import CategoryList from '@/components/pages/CategoryList'
+// import CategoryList from '@/components/pages/CategoryListTest' // 多级联动 菜单
+import CategoryList from '@/components/pages/CategoryListOriginal' // 多次操作数据库 保证翻页无误
 
 Vue.use(Router)
 
