@@ -44,8 +44,6 @@
         </div>
 
     </div>
-
-    
 </template>
 
 <script>
@@ -76,14 +74,13 @@
             // 加入购物车操作
             addGoodsToCart(){
                 let cartInfo = localStorage.cartInfo? JSON.parse(localStorage.cartInfo):[]
-                let isHave = cartInfo.find(cart=>cart.goodsId == this.goodsId) // cart 是代替 cartInfo 的形参
-                console.log(isHave);
-
+                let isHave = cartInfo.find(cart=>{return cart.goodsId == this.goodsId}) // cart 是代替 cartInfo 的形参
+                
                 if (!isHave) {
                     // 没有该商品则直接添加进数组
                     // 放进一个新对象 来直接添加进 购物车
                     let newGoodsInfo = {
-                        goodsId : this.goodsInfo.id,
+                        goodsId : this.goodsInfo.good_id,
                         name : this.goodsInfo.name,
                         price : this.goodsInfo.present_price,
                         image : this.goodsInfo.image1,
@@ -114,10 +111,7 @@
                 .then(res=>{
                     res = res.data;
                     if (res.code==1) {
-
-                        console.log(res.data);
                         this.goodsInfo = res.data
-
                     } else if (res.code==0) {
                         Toast.fail(res.msg)
                         if (res.err_code==1007) {

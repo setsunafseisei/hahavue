@@ -35,7 +35,7 @@
                             :finished="finished"
                             @load="onLoad"
                             >
-                            <div class="list-item" v-for="(item,index) in list" :key="index" @click="goodsInfo(item.id)">
+                            <div class="list-item" v-for="(item,index) in list" :key="index" @click="goodsInfo(item.good_id)">
                                 <div class="list-item-img"><img :src="item.image1" :onerror="errorImg" width="100%"/></div>
                                 <div class="list-item-text">
                                     <div>{{item.name}}</div>
@@ -220,6 +220,7 @@
             //上拉加载方法
             onLoad() {
                 setTimeout(() => {
+                    this.categorySub = this.categorySub ? this.categorySub : [{sub_id:0}]
                     this.categorySubId = this.categorySubId?this.categorySubId:this.categorySub[0].sub_id
                     this.getSubCateGoods()
                 },888)
@@ -254,12 +255,11 @@
                 clickable:true // 是否可点击
             }
         },
-
         mounted(){
             let winHeight = document.documentElement.clientHeight
-            document.getElementById("leftNav").style.height = winHeight - 46 + 'px'
-            document.getElementById('list-div').style.height=winHeight-90 +'px'
-        }
+            document.getElementById('leftNav').style.height=winHeight-46-50 +'px'
+            document.getElementById('list-div').style.height=winHeight-90-50 +'px'
+        },
         
     }
 </script>
